@@ -2,7 +2,8 @@ fastapi
 uvicorn
 sqlalchemy
 asyncpg
-pydantic[email
+pydantic[email]
 envparse
 psycopg2
 alembic
+black
