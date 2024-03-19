@@ -106,7 +106,7 @@ user_router = APIRouter()
 async def _create_new_user(body: UserCreate) -> ShowUser:
     async with async_session() as session:  # орагнизуем сессию в рамках _create_new_user
         async with session.begin():
-            user_dal = UserDAL(async_session)
+            user_dal = UserDAL(session)
 
             # создаем юзера в БД (sqlalchemy объект)
             user = await user_dal.create_user(
