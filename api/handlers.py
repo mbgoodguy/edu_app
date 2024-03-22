@@ -1,16 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.models import UserCreate, ShowUser
-from main import async_session, UserDAL
+from db.dals import UserDAL
+from db.session import get_db
 
 user_router = APIRouter()
 
 
 # protected ф-ия. Для использ-я внутри другой ф-ии
-async def _create_new_user(body: UserCreate) -> ShowUser:
-    async with async_session() as session:  # орагнизуем сессию в рамках _create_new_user
+async def _create_new_user(body: UserCreate, db: AsyncSession) -> ShowUser:
+    async with db as session:  # орагнизуем сессию в рамках _create_new_user
         async with session.begin():
-            user_dal = UserDAL(session)
+            user_dal = UserDAL(db_session=db)
 
             # создаем юзера в БД (sqlalchemy объект)
             user = await user_dal.create_user(
@@ -30,5 +32,5 @@ async def _create_new_user(body: UserCreate) -> ShowUser:
 
 
 @user_router.post("/", response_model=ShowUser)
-async def create_user(body: UserCreate) -> ShowUser:
-    return await _create_new_user(body)
+async def create_user(body: UserCreate, db: AsyncSession = Depends(get_db)) -> ShowUser:
+    return await _create_new_user(body, db=db)

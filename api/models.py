@@ -1,5 +1,4 @@
 # -- API MODELS (pydantic) --
-# паттерн вынесен в global scope чтобы не пересоздавать его в ф-ях, что затратно по памяти. Лучше создать 1 раз
 import re
 import uuid
 
@@ -7,6 +6,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel, EmailStr, field_validator
 from starlette import status
 
+# паттерн вынесен в global scope чтобы не пересоздавать его в ф-ях, что затратно по памяти. Лучше создать 1 раз
 LETTER_MATCH_PATTERN = re.compile(r"^[а-яА-Яa-zA-z\-]+$")
 
 
